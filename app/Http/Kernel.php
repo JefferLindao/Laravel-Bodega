@@ -57,5 +57,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \SisBodega\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'roles' => \Caffeinated\Shinobi\Middleware\UserHasRole::class,
+        'permission' => \Caffeinated\Shinobi\Middleware\UserHasPermission::class,
     ];
 }

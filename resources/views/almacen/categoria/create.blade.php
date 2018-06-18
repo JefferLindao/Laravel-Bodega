@@ -1,4 +1,12 @@
 @extends('layouts.admin')
+@section('headder')
+<h1>Categorias <small> Nueva Categoria</small></h1>
+<ol class="breadcrumb">
+  <li><a href="{{ url('seguridad') }}"><i class="fa fa-dashboard"></i> Inicio</a></li>
+  <li><a href="{{ url('almacen/categoria') }}"><i class="fa fa-laptop"></i> Categorias</a></li>
+  <li class="active">Nueva Categoria</li>
+</ol>
+@stop
 @section('contenido')
 <div class="row">
 	<div class="col-md-12">
@@ -15,7 +23,8 @@
 	    <div class="box-body">
 	      	<div class="row">
 	          	<div class="col-md-12">
-	              <!--Contenido-->
+	          	@can('articulo.create')
+	            <!--Contenido-->
 	            <div class="row">
 	            	<div class="col-xs-12 col-sm-6">
 	            		<h3>Nueva Categoria</h3>
@@ -47,6 +56,13 @@
 	            	</div>
 	            </div>
 	            <!--Fin Contenido-->
+	            @else
+	            <div class="row">
+	            	<div class="col-xs-12 text-center">
+	            		<h3 style='color:#FA206A'>No tienes permiso para esta sección</h3>
+	            	</div>
+	            </div>
+				@endcan
 	      		</div>
 	      	</div><!-- /.row -->
 	    </div><!-- /.box-body -->

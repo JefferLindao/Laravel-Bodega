@@ -5,19 +5,21 @@
 	<div class="col-xs-12">
 		<div class="table-responsive">
 			<table class="table table-bordered table-condensed table-striped">
-				<thead>
-					<tr class="text-center">
-						<th>Id</th>
-						<th>Nombre</th>
-						<th>Usuario</th>
+				<thead style="background: rgba(180, 0, 255, 0.3)">
+					<tr>
+						<th class="text-center">Id</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Usuario</th>
+						<th class="text-center">Rol</th>
 					</tr>
 				</thead>
 				<tbody>
 					@foreach ($usuarios as $usu)
-					<tr>
+					<tr style="background: rgba(180, 0, 255, 0.1)">
 						<td class="text-center">{{ $usu->id }}</td>
-						<td>{{ $usu->name }}</td>
-						<td>{{ $usu->email }}</td>
+						<td class="text-center">{{ $usu->name }}</td>
+						<td class="text-center">{{ $usu->email }}</td>
+						<td class="text-center">{{ $usu->role }}</td>
 					</tr>
 					@endforeach
 				</tbody>

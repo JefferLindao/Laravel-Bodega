@@ -5,20 +5,19 @@
 	<div class="col-xs-12">
 		<div class="table-responsive">
 			<table class="table table-bordered table-condensed table-striped">
-				<thead>
-					<tr class="text-center">
-						<th>Id</th>
-						<th>Nombre</th>
-						<th>Descripción</th>
-						
+				<thead style="background: rgba(33, 208, 54, 0.3)">
+					<tr>
+						<th class="text-center">Id</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Descripción</th>
 					</tr>
 				</thead>
 				<tbody>
 					@foreach ($categorias as $cat) 
-				    <tr>
-				      <td>{{ $cat->Cate_codi }}</td>
-				      <td>{{ $cat->Cate_nomb }}</td>
-				      <td>{{ $cat->Cate_desc }}</td>
+				    <tr style="background: rgba(33, 208, 54, 0.1)">
+				      <td class="text-center">{{ $cat->Cate_codi }}</td>
+				      <td class="text-center">{{ $cat->Cate_nomb }}</td>
+				      <td class="text-center">{{ $cat->Cate_desc }}</td>
 					</tr>
 					@endforeach
 				</tbody>

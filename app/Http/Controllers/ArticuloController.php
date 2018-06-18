@@ -31,8 +31,9 @@ class ArticuloController extends Controller
             ->select('a.Arti_codi', 'a.Arti_nomb', 'a.Arti_seri', 'a.Arti_stoc', 'c.Cate_nomb', 'a.Arti_desc', 'a.Arti_imag', 'a.Arti_esta')
             ->where('a.Arti_nomb','LIKE','%'.$query.'%')
             ->orwhere('a.Arti_seri','LIKE','%'.$query.'%')
-            ->orderBy('a.Arti_nomb','asc')
-            ->paginate(5);
+            ->orwhere('c.Cate_nomb', 'LIKE','%'.$query.'%')
+            ->orderBy('a.Arti_codi','asc')
+            ->paginate(4);
             return view('almacen.articulo.index',["articulos"=>$articulos,"searchText"=>$query]);
         }
     }
@@ -61,7 +62,10 @@ class ArticuloController extends Controller
         $articulo->Arti_nomb=$request->get('nombre');
         $articulo->Arti_stoc='0';
         $articulo->Arti_desc=$request->get('descripcion');
+        $articulo->Arti_tota='0';
+        $articulo->Arti_fech=$request->get('fecha');
         $articulo->Arti_esta='Activo';
+
         $articulo->Cate_codi=$request->get('selecategoria');
         if (Input::hasFile('imagen')) {
             $file=Input::file('imagen');
@@ -80,6 +84,7 @@ class ArticuloController extends Controller
      */
     public function show($id)
     {
+
         return view('almacen.articulo.show',["articulo"=>Articulo::findOrFail($id)]);
     }
 
@@ -89,11 +94,31 @@ class ArticuloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+   
     public function edit($id)
     {
+        
+       
         $articulo=Articulo::findOrFail($id);
         $categorias=DB::table('tb_catego')->where('Cate_cond', '=', '1')->get();
-        return view('almacen.articulo.edit',["articulo"=>$articulo, "categorias"=>$categorias]);
+
+        $consulta=DB::table('tb_ingres as i')
+        ->join('tb_person as p', 'i.Prov_codi', '=', 'p.Pers_codi')
+        ->join('tb_Deting as d', 'i.Ingr_codi', '=', 'd.Ingr_codi')
+        ->join('tb_articu as a', 'd.Arti_codi', '=', 'a.Arti_codi')
+        ->select('p.Pers_nomb','d.Deti_prec','d.Deti_prev')
+        ->where('a.Arti_codi', '=', $id)
+        ->first();
+
+
+        $salida=DB::table('tb_Kardex as k')
+        ->join('tb_articu as a', 'k.Arti_codi', '=', 'a.Arti_codi')
+        ->select('a.Arti_nomb', 'k.Kard_cant', 'k.Kard_movi','k.Kard_prev','k.Kard_prec', 'k.Kard_stoc', 'k.Kard_sast','k.Kard_sato', DB::raw('DATE_FORMAT(k.Kard_fech,"%H:%i") as hora'),DB::raw('DATE_FORMAT(k.Kard_fech,"%d %b %Y") as fecha'))
+        ->where('a.Arti_codi', '=', $id)
+        ->orderBy('fecha','asc')
+        ->get();
+
+        return view('almacen.articulo.edit',["articulo"=>$articulo, "categorias"=>$categorias, "consulta"=>$consulta, "salida"=>$salida]);
     }
 
     /**
@@ -109,13 +134,14 @@ class ArticuloController extends Controller
         $articulo->Arti_seri=$request->get('codigo');
         $articulo->Arti_nomb=$request->get('nombre');
         $articulo->Arti_desc=$request->get('descripcion');
+        $articulo->Arti_fech=$request->get('fecha');
         $articulo->Cate_codi=$request->get('selecategoria');
         if (Input::hasFile('imagen')) {
             $file=Input::file('imagen');
             $file->move(public_path().'/img/articulos',$file->getClientOriginalName());
             $articulo->Arti_imag=$file->getClientOriginalName();
         }
-        $articulo->update();
+        $articulo->update(); 
         return Redirect::to('almacen/articulo');
     }
 

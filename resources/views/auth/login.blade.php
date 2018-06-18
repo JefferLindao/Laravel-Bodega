@@ -3,7 +3,7 @@
 @section('content')
     <div class="login-box">
         <div class="login-logo">
-           <a href="#"><b>SistemaBodega</b></a>
+           <a href="#"><b>Amy Shoes</b></a>
         </div><!-- /.login-logo -->
         <div class="login-box-body">
             <p class="login-box-msg">Ingrese sus datos de Acceso</p>
@@ -24,7 +24,7 @@
                     <input id="password" type="password" class="form-control" name="password" required placeholder="Password">
                     <i class="fa fa-lock form-control-feedback"></i></span>
                     @if ($errors->has('password'))
-                    <span class="help-block">
+                    <span class="help-block">x  
                         <strong>{{ $errors->first('password') }}</strong>
                     </span>
                     @endif

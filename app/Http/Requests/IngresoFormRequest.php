@@ -24,8 +24,6 @@ class IngresoFormRequest extends FormRequest
     public function rules()
     {
         return [
-            
-            'tipo_comprobante'=>'required|max:20',
             'serie_comprobante'=>'max:7',
             'numero_comprobante'=>'required|max:10',
             'proveedor'=>'required',
@@ -33,6 +31,7 @@ class IngresoFormRequest extends FormRequest
             'cantidad' => 'required',
             'precio_compra' => 'required',
             'precio_venta' => 'required',
+            'total_ingreso' => 'required',
         ];
     }
 }

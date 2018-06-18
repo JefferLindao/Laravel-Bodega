@@ -6755,4 +6755,7 @@ button.close {
     display: none !important;
   }
 }
+.modal-dialog-center{
+  margin-top: 10%;
+}
 /*# sourceMappingURL=bootstrap.css.map */

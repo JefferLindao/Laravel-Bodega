@@ -1,4 +1,12 @@
 @extends('layouts.admin')
+@section('headder')
+<h1>Ingreso de Articulos<small>Detalles Ingreso de Articulos</small></h1>
+<ol class="breadcrumb">
+  <li><a href="{{ url('seguridad') }}"><i class="fa fa-dashboard"></i> Inicio</a></li>
+  <li><a href="{{ url('compras/ingreso') }}"><i class="fa fa-th"></i> Ingreso de Articulos</a></li>
+  <li class="active">Detalles Ingreso de Articulos</li>
+</ol>
+@stop
 @section('contenido')
 <div class="row">  
 	<div class="col-md-12">
@@ -7,7 +15,6 @@
 	      <h3 class="box-title">Compras - Ingresos</h3>
 	      <div class="box-tools pull-right">
 	        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus text-blue"></i></button>
-	        
 	        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times text-red"></i></button>
 	      </div>
 	    </div>
@@ -15,7 +22,8 @@
 	    <div class="box-body">
 	      	<div class="row">
 	          	<div class="col-md-12">
-	              <!--Contenido-->
+	          		@can('ingreso.show')
+	                <!--Contenido-->
 		            <div class="row">
 		            	<div class="col-xs-12">
 		            		<div class="form-group">
@@ -71,10 +79,10 @@
 		            								@foreach ($detalles as $del)
 		            								<tr>
 		            									<td>{{ $del->articulo }}</td>
-		            									<td>{{ $del->Deli_cant }}</td>
-		            									<td>{{ $del->Deli_prec }}</td>
-		            									<td>{{ $del->Deli_prev }}</td>
-		            									<td>{{ $del->Deli_cant*$del->Deli_prec }}</td>
+		            									<td>{{ $del->Deti_cant }}</td>
+		            									<td>{{ $del->Deti_prec }}</td>
+		            									<td>{{ $del->Deti_prev }}</td>
+		            									<td>{{ $del->Deti_cant*$del->Deti_prec }}</td>
 		            								</tr>
 		            								@endforeach
 		            							</tbody>
@@ -86,6 +94,13 @@
 		            	</div>
 		            </div>
 	            <!--Fin Contenido-->
+	            @else
+	            <div class="row">
+	            	<div class="col-xs-12 text-center">
+	            		<h3 style='color:#FA206A'>No tienes permiso para esta sección</h3>
+	            	</div>
+	            </div>
+				@endcan
 	      		</div>
 	      	</div><!-- /.row -->
 	    </div><!-- /.box-body -->

@@ -5,27 +5,25 @@
 	<div class="col-xs-12">
 		<div class="table-responsive">
 			<table class="table table-bordered table-condensed table-striped">
-				<thead>
-					<tr class="text-center">
-						<th>Id</th>
-						<th>Nombre</th>
-						<th>Dirección</th>
-						<th>TipoDoc.</th>
-						<th>NumeroDoc.</th>
-						<th>Teléfono</th>
-						<th>Email</th>
+				<thead style="background: rgba(53, 98, 246, 0.3)">
+					<tr>
+						<th class="text-center">Id</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Numero Doc.</th>
+						<th class="text-center">Teléfono</th>
+						<th class="text-center">Email</th>
+						<th class="text-center">Dirección </th>
 					</tr>
 				</thead>
 				<tbody>
 					@foreach ($proveedores as $pro) 
-				    <tr>
-				      <td>{{ $pro->Pers_codi }}</td>
-				      <td>{{ $pro->Pers_nomb }}</td>
-				      <td>{{ $pro->Pers_dire }}</td>
-				      <td>{{ $pro->Pers_tido }}</td>
-				      <td>{{ $pro->Pers_nudo }}</td>
-				      <td>{{ $pro->Pers_tele }}</td>
-				      <td>{{ $pro->Pers_emai }}</td>
+				    <tr style="background: rgba(53, 98, 246, 0.1)">
+				      <td class="text-center">{{ $pro->Pers_codi }}</td>
+				      <td class="text-center">{{ $pro->Pers_nomb }}</td>
+				      <td class="text-center"><em>{{ $pro->Pers_tido }}</em> {{ $pro->Pers_nudo }}</td>
+				      <td class="text-center">{{ $pro->Pers_tele }}</td>
+				      <td class="text-center">{{ $pro->Pers_emai }}</td>
+				      <td class="text-center">{{ $pro->Pers_dire }}</td>
 					</tr>
 					@endforeach
 				</tbody>

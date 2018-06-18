@@ -1,5 +1,17 @@
 @extends('layouts.admin')
+@section('headder')
+<h1>
+  Articulo
+  <small>Nuevo Articulo</small>
+</h1>
+<ol class="breadcrumb">
+  <li><a href="{{ url('seguridad') }}"><i class="fa fa-dashboard"></i> Inicio</a></li>
+  <li><a href="{{ url('almacen/articulo') }}"><i class="fa fa-laptop"></i> Articulos</a></li>
+  <li class="active">Nuevo Articulo</li>
+</ol>
+@stop
 @section('contenido')
+
 <div class="row">
 	<div class="col-md-12">
 	  <div class="box box-green">
@@ -15,7 +27,8 @@
 	    <div class="box-body">
 	      	<div class="row">
 	          	<div class="col-md-12">
-	              <!--Contenido-->
+		          	@can('articulo.create')
+		            <!--Contenido-->
 		            <div class="row">
 		            	<div class="col-xs-12 col-sm-6">
 		            		<h3>Nuevo Articulo</h3>
@@ -50,16 +63,67 @@
 		            			</select>
 		            		</div>
 		            	</div>
+
 		            	<div class="col-xs-12 col-sm-6">
 		            		<div class="form-group">
-		            			<label for="codigo">Codigo</label>
-		            			<input type="text" name="codigo" required value="{{ old('codigo') }}" class="form-control" placeholder="Codigo del articulo...">
-		            		</div>
-		            	</div>
+				                <label>Fecha de Caducidad:</label>
+	
+				                <div class="input-group ">
+				                  <div class="input-group-addon">
+				                    <i class="fa fa-calendar"></i>
+				                  </div>
+				                  <input type="date"  name="fecha" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+				                </div>
+				                <!-- /.input group -->
+			              </div>
+			              <!-- /.form group -->
+			            </div>
 		            	<div class="col-xs-12 col-sm-6">
 		            		<div class="form-group">
 		            			<label for="descripcion">Descripcion</label>
 		            			<input type="text" name="descripcion" value="{{ old('descripcion') }}" class="form-control" placeholder="Descripcion del articulo...">
+		            		</div>
+		            	</div>
+		            	<div class="col-xs-12 col-sm-6">
+		            		<div class="form-group">
+				            	<label for="codigo">Código</label>
+				            	<input type="text" name="codigo" id="codigobar" required value="{{ old('codigo') }}" class="form-control" placeholder="Código del artículo...">
+				                <br>
+				                <div class="text-center">
+					               <button class="btn btn-success text-center" type="button" onclick="generarBarcode()">Generar</button>
+					               <button class="btn btn-info text-center" onclick="imprimir()"type="button">imprimir</button>
+				                </div>
+				                <div id="print" class="text-center">
+				                    <svg id="barcode"></svg>
+				                </div>
+						           
+						       
+				            		@push('script')
+				            		<script>
+										function generarBarcode()
+										{   
+										    codigo=$("#codigobar").val();
+										    JsBarcode("#barcode", codigo, {
+										    font: "OCRB",
+										    fontSize: 18,
+										    textMargin: 0
+										    });
+										}
+										$('#liAlmacen').addClass("treeview active");
+										$('#liArticulos').addClass("active");
+
+
+
+										//Código para imprimir el svg
+										function imprimir()
+										{
+										    $("#print").printArea();
+										}
+
+									</script>
+									@endpush
+					            	
+				            
 		            		</div>
 		            	</div>
 		            	<div class="col-xs-12 col-sm-6">
@@ -76,11 +140,22 @@
 		            	</div>
 	            		{!! Form::close() !!}
 	                </div>
-	            <!--Fin Contenido-->
+		            <!--Fin Contenido-->
+		            @else
+		            <div class="row">
+		            	<div class="col-xs-12 text-center">
+		            		<h3 style='color:#FA206A'>No tienes permiso para esta sección</h3>
+		            	</div>
+		            </div>
+					@endcan
 	      		</div>
 	      	</div><!-- /.row -->
 	    </div><!-- /.box-body -->
+	    
 	  </div><!-- /.box -->
 	</div><!-- /.col -->
 </div><!-- /.row -->
+
+
 @endsection
+
