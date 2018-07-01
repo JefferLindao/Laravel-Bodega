@@ -271,13 +271,10 @@
     <script src="{{asset('js/PrintArea.js')}}"></script>
     <!-- Bootstrap-select 1.12.4 -->
     <script src="{{asset('js/bootstrap-select.js')}}"></script>
-    <script src="{{asset('js/highcharts.js')}}"></script>
-    <script src="{{asset('js/highcharts-more.js')}}"></script>
-    <script src="{{asset('js/exporting.js')}}"></script>
     @stack('char')
     <!-- AdminLTE App -->
     <script src="{{asset('js/app.min.js')}}"></script>
-    <script src="{{asset('js/graficas.js')}}"></script>
+   
     @stack('chart')
     <script src="{{asset('js/plusis.js')}}"></script>
   </body>
