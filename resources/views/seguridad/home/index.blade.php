@@ -81,7 +81,7 @@
                 <?php  echo '<option value="'.$anio.'" >'.$anio.'</option>';?>
                 <option value="2016" >2016</option>
                 <option value="2017" >2017</option>
-                <option value="2018">2018</option>
+                <option value="2018" >2018</option>
                 <option value="2019" >2019</option>
                 <option value="2020" >2020</option>
                 <option value="2021" >2021</option>
@@ -236,6 +236,10 @@
 </section> 
 <!--fin section  -->
 @push('chart')
+<script src="{{asset('js/highcharts.js')}}"></script>
+<script src="{{asset('js/highcharts-more.js')}}"></script>
+<script src="{{asset('js/exporting.js')}}"></script>
+<script src="{{asset('js/graficas.js')}}"></script>
 <script>
   cargar_grafica_barras(<?= $anio; ?>,<?= intval($mes); ?>);
   cargar_grafica_lineas(<?= $anio; ?>,<?= intval($mes); ?>);

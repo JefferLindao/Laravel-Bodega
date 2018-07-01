@@ -274,11 +274,11 @@
     <script src="{{asset('js/highcharts.js')}}"></script>
     <script src="{{asset('js/highcharts-more.js')}}"></script>
     <script src="{{asset('js/exporting.js')}}"></script>
-    <script src="{{asset('js/graficas.js')}}"></script>
     @stack('char')
     <!-- AdminLTE App -->
     <script src="{{asset('js/app.min.js')}}"></script>
-     @stack('chart')
+    <script src="{{asset('js/graficas.js')}}"></script>
+    @stack('chart')
     <script src="{{asset('js/plusis.js')}}"></script>
   </body>
 </html>
