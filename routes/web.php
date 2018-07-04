@@ -15,12 +15,11 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-
-
-    Route::get('post','CategoriaController@index');
-    Route::POST('addPost','CategoriaController@addPost');
-    Route::POST('editPost','CategoriaController@editPost');
-    Route::POST('deletePost','CategoriaController@deletePost');
+    Route::get('almacen/categoria','CategoriaController@index');
+    Route::POST('almacen/addPost','CategoriaController@addPost');
+    Route::POST('almacen/editPost','CategoriaController@editPost');
+    Route::POST('almacen/deletePost','CategoriaController@deletePost');
+    Route::get('almacen/search','CategoriaController@search');
 
 
 

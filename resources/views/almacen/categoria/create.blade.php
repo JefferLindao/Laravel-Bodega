@@ -1,72 +1,39 @@
-@extends('layouts.admin')
-@section('headder')
-<h1>Categorias <small> Nueva Categoria</small></h1>
-<ol class="breadcrumb">
-  <li><a href="{{ url('seguridad') }}"><i class="fa fa-dashboard"></i> Inicio</a></li>
-  <li><a href="{{ url('almacen/categoria') }}"><i class="fa fa-laptop"></i> Categorias</a></li>
-  <li class="active">Nueva Categoria</li>
-</ol>
-@stop
-@section('contenido')
-<div class="row">
-	<div class="col-md-12">
-	  <div class="box box-green">
-	    <div class="box-header winth-border with-border-green">
-	      <h3 class="box-title">Almacen - Categorias</h3>
-	      <div class="box-tools pull-right">
-	        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus text-blue"></i></button>
-	        
-	        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times text-red"></i></button>
-	      </div>
-	    </div>
-	    <!-- /.box-header -->
-	    <div class="box-body">
-	      	<div class="row">
-	          	<div class="col-md-12">
-	          	@can('articulo.create')
-	            <!--Contenido-->
-	            <div class="row">
-	            	<div class="col-xs-12 col-sm-6">
-	            		<h3>Nueva Categoria</h3>
-	            		@if(count($errors)>0)
-	            		<div class="alert alert-danger">
-	            			<ul>
-	            				@foreach($errors->all() as $error)
-	            				<li>{{$error}}</li>
-	            				@endforeach
-	            			</ul>
-	            		</div>
-	            		@endif
-
-	            		{!! Form::open(['url' => 'almacen/categoria', 'method' => 'POST', 'autocomplete' => 'off']) !!}
-	            		{{ Form::token() }}
-	            		<div class="form-group">
-	            			<label for="nombre">Nombre</label>
-	            			<input type="text" name="nombre" class="form-control" placeholder="Nombre...">
-	            		</div>
-	            		<div class="form-group">
-	            			<label for="descripcion">Descripcion</label>
-	            			<input type="text" name="descripcion" class="form-control" placeholder="Descripcion...">
-	            		</div>
-	            		<div class="form-group">
-	            			<button class="btn btn-primary" type="submit">Guardar</button>
-	            			<button class="btn btn-danger" type="reset">Cancelar</button>
-	            		</div>
-	            		{!! Form::close() !!}
-	            	</div>
-	            </div>
-	            <!--Fin Contenido-->
-	            @else
-	            <div class="row">
-	            	<div class="col-xs-12 text-center">
-	            		<h3 style='color:#FA206A'>No tienes permiso para esta sección</h3>
-	            	</div>
-	            </div>
-				@endcan
-	      		</div>
-	      	</div><!-- /.row -->
-	    </div><!-- /.box-body -->
-	  </div><!-- /.box -->
-	</div><!-- /.col -->
-</div><!-- /.row -->
-@endsection
+<div id="create" class="modal fade modal-slide-in-right" role="dialog"  tabindex="-5">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-green">
+        <button type="button" class="close" data-dismiss="modal">&times;</span>
+        </button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" role="form">
+          <div class="form-group add">
+            <div class="row">
+              <label class="control-label col-sm-2" for="title">Nombre :</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="nombre" name="nombre"
+                placeholder="Your Nombre Here" required><br>
+                <p class="error error-nomb text-center alert alert-danger hidden" id="success-alert"></p>
+              </div>
+            </div> 
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <label class="control-label col-sm-2" for="body">Descripción:</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="descripcion" name="descripcion"
+                placeholder="Your Descripción Here" required><br>
+                <p class="error error-desc text-center alert alert-danger hidden" id="success-alert"></p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" type="submit" id="add">Crear</button>
+        <button class="btn btn-danger" type="button" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
