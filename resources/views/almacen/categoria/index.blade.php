@@ -64,7 +64,7 @@
 							    	   <a href="#" class="edit-modal btn btn-warning btn-sm" data-codi="{{$cat->Cate_codi}}" data-nomb="{{$cat->Cate_nomb}}" data-desc="{{$cat->Cate_desc}}">Editar</a>
 							    	    @endcan
 							    	    @can('categoria.delete')
-							    	    <a href="#" class="delete-modal btn btn-danger btn-sm" data-codi="{{$cat->Cate_codi}}" data-nomb="{{$cat->Cate_nomb}}" data-desc="{{$cat->Cate_desc}}">Eliminar</a>
+							    	    <a href="#" class="delete-modal btn btn-danger btn-sm" data-codi="{{$cat->Cate_codi}}" data-nomb="{{$cat->Cate_nomb}}">Eliminar</a>
 							    	    @endcan
 							    	  </td>
 							    	  @endcanatleast

@@ -96,5 +96,9 @@ class SeguridadController extends Controller
             return view('seguridad.home.index',["usuarios"=>$usuarios,"proveedores"=>$proveedores,"clientes"=>$clientes, "articulos"=>$articulos, "articuReciente"=>$articuReciente, 'anio'=>$anio, 'mes'=>$mes, "ventas"=>$ventas,"venta"=>$venta]);
 
         }
+
+    }
+    public function programadores() {
+        return view('seguridad.home.programadores');
     }
 }

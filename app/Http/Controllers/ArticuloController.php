@@ -3,10 +3,12 @@
 namespace SisBodega\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Input;
-use SisBodega\Http\Requests\ArticuloFormRequest;
 use SisBodega\Models\Articulo;
+use SisBodega\Models\Categoria;
+use Illuminate\Support\Facades\Input;
+use SisBodega\http\Requests;
+use Validator;
+use Response;
 use DB;
 
 class ArticuloController extends Controller
@@ -26,136 +28,152 @@ class ArticuloController extends Controller
     {
         if($request)
         {
-            $query=trim($request->get('searchText'));
             $articulos=DB::table('tb_articu as a')->join('tb_catego as c', 'a.Cate_codi', '=', 'c.Cate_codi')
-            ->select('a.Arti_codi', 'a.Arti_nomb', 'a.Arti_seri', 'a.Arti_stoc', 'c.Cate_nomb', 'a.Arti_desc', 'a.Arti_imag', 'a.Arti_esta')
+            ->select('a.Arti_codi', 'a.Arti_nomb', 'a.Arti_seri', 'a.Arti_stoc', 'c.Cate_nomb', 'c.Cate_codi', 'a.Arti_desc', 'a.Arti_imag', 'a.Arti_esta', 'a.Arti_fech')
+            ->where('a.Arti_esta','=','Activo')
+            ->paginate(4);
+            $categorias=Categoria::all();
+            return view('almacen.articulo.index',compact('articulos', 'categorias'));
+        }
+    }
+
+    public function create(Request $request)
+    {
+        $output="";
+        $artic="";
+        $rules = array(
+        'nombre' => 'required',
+        'codigo' => 'required',
+        'fecha' => 'date',
+        'descripcion' => 'required',
+        );
+        $validator = Validator::make ( Input::all(), $rules);
+        if ($validator->fails())
+            return Response::json(array('errors'=> $validator->getMessageBag()->toarray()));
+        else{
+            $articulo = new Articulo;
+            $articulo->Arti_nomb = $request->nombre;
+            $articulo->Arti_desc = $request->descripcion;
+            $articulo->Arti_seri = $request->codigo;
+            $articulo->Arti_fech = $request->fecha;
+            $articulo->Cate_codi = $request->categoria;
+            $articulo->Arti_stoc = '0';
+            $articulo->Arti_tota = '0';
+            $articulo->Arti_esta = 'Activo';
+            if (Input::hasFile('imagen')) {
+            $file=Input::file('imagen');
+            $file->move(public_path().'/img/articulos',$file->getClientOriginalName());
+            $articulo->Arti_imag=$file->getClientOriginalName();
+            }
+            $articulo->save();
+            if($articulo){
+                $articulos=DB::table('tb_articu as a')->join('tb_catego as c', 'a.Cate_codi', '=', 'c.Cate_codi')
+               ->select('a.Arti_codi', 'a.Arti_nomb', 'a.Arti_seri', 'a.Arti_stoc', 'c.Cate_nomb', 'c.Cate_codi', 'a.Arti_desc', 'a.Arti_imag', 'a.Arti_esta', 'a.Arti_fech')
+               ->where('a.Arti_esta','=','Activo')
+                ->paginate(4);
+                foreach ($articulos as $art) {
+                    if ( $art->Arti_stoc != "0") {
+                        $artic = " <a href='#' class='edit-modal btn btn-warning btn-sm' data-codi='". $art->Arti_codi ."' data-nomb='". $art->Arti_nomb ."' data-seri='". $art->Arti_seri ."' data-nomc='". $art->Cate_codi ."' data-stoc='". $art->Arti_stoc ."' data-esta='". $art->Arti_esta ."' data-desc='". $art->Arti_desc ."' data-imag='". $art->Arti_imag ."'>Editar</a>";
+                    }else {
+                       $artic = " <a href='../compras/ingreso/create'><button class='btn btn-sm bg-blue'>Ingreso</button></a>";
+                    }
+                    $output .=
+                    "<tr class='articulo". $art->Arti_codi ."'>".
+                    "<td>". $art->Arti_codi ."</td>".
+                    "<td>". $art->Arti_nomb ."</td>".
+                    "<td>". $art->Arti_seri ."</td>".
+                    "<td>". $art->Cate_nomb ."</td>".
+                    "<td>". $art->Arti_stoc ."</td>".
+                    "<td class='text-center'>".
+                        "<img src='../../../../img/articulos/".$art->Arti_imag."' height='100px' width='100px' class='img-thumbnail imag-center'>".
+                    "</td>".
+                    "<td>". $art->Arti_esta ."</td>".
+                    "<td class='text-center'>".
+                    "<a href='#' class='show-modal btn btn-info btn-sm' data-codi='". $art->Arti_codi ."' data-nomb='". $art->Arti_nomb ."' data-seri='". $art->Arti_seri ."' data-nomc='". $art->Cate_nomb ."' data-stoc='". $art->Arti_stoc ."' data-esta='". $art->Arti_esta ."' data-desc='". $art->Arti_desc ."' data-imag='". $art->Arti_imag ."'>Detalles</a>".
+                    $artic.
+                    " <a href='#' class='delete-modal btn btn-danger btn-sm' data-codi='". $art->Arti_codi ."' data-nomb='". $art->Arti_nomb ."'>Eliminar</a>".
+                    "</td>";
+                }
+            }
+            return response($output);
+        }
+    }
+   
+    public function edit(request $request)
+    {
+        $rules = array(
+        'nombre' => 'required',
+        'codigo' => 'required',
+        'fecha' => 'date',
+        'descripcion' => 'required',
+        );
+        $validator = Validator::make ( Input::all(), $rules);
+        if ($validator->fails())
+            return Response::json(array('errors'=> $validator->getMessageBag()->toarray()));
+        else{
+            $articulo = Articulo::find ($request->id);
+            $articulo->Arti_nomb = $request->nombre;
+            $articulo->Arti_desc = $request->descripcion;
+            $articulo->Arti_seri = $request->codigo;
+            $articulo->Arti_fech = $request->fecha;
+            $articulo->Cate_codi = $request->categoria;
+            if (Input::hasFile('imagen')) {
+            $file=Input::file('imagen');
+            $file->move(public_path().'/img/articulos',$file->getClientOriginalName());
+            $articulo->Arti_imag=$file->getClientOriginalName();
+            }
+            $articulo->save();
+            $articulos=DB::table('tb_articu as a')->join('tb_catego as c', 'a.Cate_codi', '=', 'c.Cate_codi')
+            ->select('a.Arti_codi', 'a.Arti_nomb', 'a.Arti_seri', 'a.Arti_stoc', 'c.Cate_nomb', 'c.Cate_codi', 'a.Arti_desc', 'a.Arti_imag', 'a.Arti_esta', 'a.Arti_fech')
+            ->where('a.Arti_esta','=','Activo')
+            ->where('a.Arti_codi','=',$request->id)
+            ->get();
+            return response()->json(array('art' => $articulos));
+        }
+    }
+    public function delete(request $request){
+      $articulo = Articulo::findOrFail($request->id);
+      $articulo->delete();
+      return response()->json();
+    }
+    public function search(Request $request)
+    {
+        $output="";
+        if ($request->ajax()) {
+            $query=trim($request->searchText);
+            $articulos=DB::table('tb_articu as a')->join('tb_catego as c', 'a.Cate_codi', '=', 'c.Cate_codi')
+            ->select('a.Arti_codi', 'a.Arti_nomb', 'a.Arti_seri', 'a.Arti_stoc', 'c.Cate_nomb', 'c.Cate_codi', 'a.Arti_desc', 'a.Arti_imag', 'a.Arti_esta', 'a.Arti_fech')
+            ->where('a.Arti_esta','=','Activo')
             ->where('a.Arti_nomb','LIKE','%'.$query.'%')
             ->orwhere('a.Arti_seri','LIKE','%'.$query.'%')
             ->orwhere('c.Cate_nomb', 'LIKE','%'.$query.'%')
-            ->orderBy('a.Arti_codi','asc')
             ->paginate(4);
-            return view('almacen.articulo.index',["articulos"=>$articulos,"searchText"=>$query]);
+            if ($articulos) {
+                foreach ($articulos as $art) {
+                    if ( $art->Arti_stoc != "0") {
+                        $artic = " <a href='#' class='edit-modal btn btn-warning btn-sm' data-codi='". $art->Arti_codi ."' data-nomb='". $art->Arti_nomb ."' data-seri='". $art->Arti_seri ."' data-nomc='". $art->Cate_codi ."' data-stoc='". $art->Arti_stoc ."' data-esta='". $art->Arti_esta ."' data-desc='". $art->Arti_desc ."' data-imag='". $art->Arti_imag ."'>Editar</a>";
+                    }else {
+                       $artic = " <a href='../compras/ingreso/create'><button class='btn btn-sm bg-blue'>Ingreso</button></a>";
+                    }
+                    $output .=
+                    "<tr class='articulo". $art->Arti_codi ."'>".
+                    "<td>". $art->Arti_codi ."</td>".
+                    "<td>". $art->Arti_nomb ."</td>".
+                    "<td>". $art->Arti_seri ."</td>".
+                    "<td>". $art->Cate_nomb ."</td>".
+                    "<td>". $art->Arti_stoc ."</td>".
+                    "<td class='text-center'>".
+                        "<img src='../../../../img/articulos/".$art->Arti_imag."' height='100px' width='100px' class='img-thumbnail imag-center'>".
+                    "</td>".
+                    "<td>". $art->Arti_esta ."</td>".
+                    "<td class='text-center'>".
+                    "<a href='#' class='show-modal btn btn-info btn-sm' data-codi='". $art->Arti_codi ."' data-nomb='". $art->Arti_nomb ."' data-seri='". $art->Arti_seri ."' data-nomc='". $art->Cate_nomb ."' data-stoc='". $art->Arti_stoc ."' data-esta='". $art->Arti_esta ."' data-desc='". $art->Arti_desc ."' data-imag='". $art->Arti_imag ."'>Detalles</a>".
+                    $artic.
+                    " <a href='#' class='delete-modal btn btn-danger btn-sm' data-codi='". $art->Arti_codi ."' data-nomb='". $art->Arti_nomb ."'>Eliminar</a>".
+                    "</td>";
+                }
+            }
+            return Response($output);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $categorias=DB::table('tb_catego')->where('Cate_cond', '=', '1')->get();
-        return view("almacen.articulo.create", ["categorias"=>$categorias]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(ArticuloFormRequest $request)
-    {
-        $articulo=new Articulo;
-        $articulo->Arti_seri=$request->get('codigo');
-        $articulo->Arti_nomb=$request->get('nombre');
-        $articulo->Arti_stoc='0';
-        $articulo->Arti_desc=$request->get('descripcion');
-        $articulo->Arti_tota='0';
-        $articulo->Arti_fech=$request->get('fecha');
-        $articulo->Arti_esta='Activo';
-
-        $articulo->Cate_codi=$request->get('selecategoria');
-        if (Input::hasFile('imagen')) {
-            $file=Input::file('imagen');
-            $file->move(public_path().'/img/articulos',$file->getClientOriginalName());
-            $articulo->Arti_imag=$file->getClientOriginalName();
-        }
-        $articulo->save();
-        return Redirect::to('almacen/articulo');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-
-        return view('almacen.articulo.show',["articulo"=>Articulo::findOrFail($id)]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   
-    public function edit($id)
-    {
-        
-       
-        $articulo=Articulo::findOrFail($id);
-        $categorias=DB::table('tb_catego')->where('Cate_cond', '=', '1')->get();
-
-        $consulta=DB::table('tb_ingres as i')
-        ->join('tb_person as p', 'i.Prov_codi', '=', 'p.Pers_codi')
-        ->join('tb_Deting as d', 'i.Ingr_codi', '=', 'd.Ingr_codi')
-        ->join('tb_articu as a', 'd.Arti_codi', '=', 'a.Arti_codi')
-        ->select('p.Pers_nomb','d.Deti_prec','d.Deti_prev')
-        ->where('a.Arti_codi', '=', $id)
-        ->first();
-
-
-        $salida=DB::table('tb_Kardex as k')
-        ->join('tb_articu as a', 'k.Arti_codi', '=', 'a.Arti_codi')
-        ->select('a.Arti_nomb', 'k.Kard_cant', 'k.Kard_movi','k.Kard_prev','k.Kard_prec', 'k.Kard_stoc', 'k.Kard_sast','k.Kard_sato', DB::raw('DATE_FORMAT(k.Kard_fech,"%H:%i") as hora'),DB::raw('DATE_FORMAT(k.Kard_fech,"%d %b %Y") as fecha'))
-        ->where('a.Arti_codi', '=', $id)
-        ->orderBy('fecha','asc')
-        ->get();
-
-        return view('almacen.articulo.edit',["articulo"=>$articulo, "categorias"=>$categorias, "consulta"=>$consulta, "salida"=>$salida]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(ArticuloFormRequest $request, $id)
-    {
-        $articulo=Articulo::findOrFail($id);
-        $articulo->Arti_seri=$request->get('codigo');
-        $articulo->Arti_nomb=$request->get('nombre');
-        $articulo->Arti_desc=$request->get('descripcion');
-        $articulo->Arti_fech=$request->get('fecha');
-        $articulo->Cate_codi=$request->get('selecategoria');
-        if (Input::hasFile('imagen')) {
-            $file=Input::file('imagen');
-            $file->move(public_path().'/img/articulos',$file->getClientOriginalName());
-            $articulo->Arti_imag=$file->getClientOriginalName();
-        }
-        $articulo->update(); 
-        return Redirect::to('almacen/articulo');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $articulo=Articulo::findOrFail($id);
-        $articulo->Arti_esta='Inactivo';
-        $articulo->update();
-        return Redirect::to('almacen/articulo');
     }
 }

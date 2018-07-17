@@ -19,8 +19,8 @@
 
     <link rel="stylesheet" href="{{asset('css/plusis.css')}}">
     <link rel="stylesheet" href="{{asset('css/_all-skins.css')}}">
-    <link rel="apple-touch-icon" href="{{asset('img/apple-touch-icon.png')}}">
-    <link rel="shortcut icon" href="{{asset('img/favicon.ico')}}">
+    
+    <link rel="shortcut icon" href="{{asset('img/zapato.ico')}}">
   </head>
 
   <body class="hold-transition skin-blue sidebar-mini">
@@ -228,8 +228,8 @@
             </li>
 
             <li>
-              <a href="#">
-                <i class="fa fa-info-circle"></i> <span>Acerca De...</span>
+              <a href="{{ url('programadores') }}">
+                <i class="fa fa-info-circle"></i><span>Acerca De...</span>
                 <small class="label pull-right bg-yellow">IT</small>
               </a>
             </li>           
@@ -267,8 +267,6 @@
     @stack('script')
     <!-- Bootstrap 3.3.5 -->
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
-    <script src="{{asset('js/JsBarcode.all.min.js')}}"></script>
-    <script src="{{asset('js/PrintArea.js')}}"></script>
     <!-- Bootstrap-select 1.12.4 -->
     <script src="{{asset('js/bootstrap-select.js')}}"></script>
     @stack('char')

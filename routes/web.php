@@ -15,14 +15,6 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-    Route::get('almacen/categoria','CategoriaController@index');
-    Route::POST('almacen/addPost','CategoriaController@addPost');
-    Route::POST('almacen/editPost','CategoriaController@editPost');
-    Route::POST('almacen/deletePost','CategoriaController@deletePost');
-    Route::get('almacen/search','CategoriaController@search');
-
-
-
 Route::group(['middleware' => 'auth'], function () {
     /*usuarios*/
     Route::get('/listado_usuarios', 'UsuarioController@listado_usuarios');
@@ -46,13 +38,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('crear_permiso', 'UsuarioController@crear_permiso');
     Route::get('quitar_permiso/{idrol}/{idper}', 'UsuarioController@quitar_permiso');
     Route::post('asignar_permiso', 'UsuarioController@asignar_permiso');
-
     Route::post('crear_ingreso', 'IngresoController@store');
     Route::get('form_nuevo_ingreso', 'IngresoController@create');
-    
-    
-    // Route::resource('almacen/categoria', 'CategoriaController');
-    Route::resource('almacen/articulo', 'ArticuloController');
+    /*Categoria*/
+    Route::get('almacen/categoria','CategoriaController@index');
+    Route::POST('almacen/addPost','CategoriaController@addPost');
+    Route::POST('almacen/editPost','CategoriaController@editPost');
+    Route::POST('almacen/deletePost','CategoriaController@deletePost');
+    Route::get('almacen/search','CategoriaController@search');
+
+    /*Articulos*/
+    Route::GET('almacen/articulo','ArticuloController@index');
+    Route::POST('almacen/createArticulo','ArticuloController@create');
+    Route::POST('almacen/editArticulo','ArticuloController@edit');
+    Route::POST('almacen/deleteArticulo','ArticuloController@delete');
+    Route::get('almacen/searchArticulo','ArticuloController@search');
+
+    /*Route::resource('almacen/articulo', 'ArticuloController');*/
     Route::resource('compras/proveedor', 'ProveedorController');
     Route::resource('compras/ingreso', 'IngresoController');
     Route::resource('ventas/cliente', 'ClienteController');

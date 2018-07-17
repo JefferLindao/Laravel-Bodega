@@ -26,10 +26,9 @@ class ArticuloFormRequest extends FormRequest
         return [
             'codigo'=>'required|max:50',
             'nombre'=>'required|max:100',
-            'stock'=>'numeric',
             'fecha'=>'date',
             'descripcion'=>'max:500',
-            'selecategoria'=>'required'
+            'categoria'=>'required'
         ];
     }
 }

@@ -29,7 +29,7 @@
 		              <div class="col-sm-8 col-xs-12">
 		                <h3>Listado de Articulo
 		                	@can('articulo.create')
-		                	<a href="articulo/create"><button class="btn btn-success"> Nuevo</button></a>
+		                	<a href="#"><button class="create-modal btn btn-success"> Nuevo</button></a>
 		                	@endcan
 		                	@can('reporte.articulo')
 		                	<a href="{{ URL::to('articuloPDF') }}" class="btn btn-social-icon btn-google" title="Reporte" ><i class="fa fa-file-pdf-o">
@@ -43,47 +43,55 @@
 		            <div class="row">
 		              <div class="col-xs-12">
 		                <div class="table-responsive">
-		                  <table class="table table-striped table-bordered table-condensed table-hover">
-							    <thead>
-							      <th>Id</th>
-							      <th>Nombre</th>
-							      <th>Codigo</th>
-							      <th>Categoria</th>
-							      <th>Stock</th>
-							      <th>Imagen</th>
-							      <th>Estado</th>
-							      @canatleast(['articulo.edit', 'articulo.delete'])
-							      <th>Opciones</th>
-							      @endcanatleast
-							    </thead>
+		                    <table class="table table-bordered table-condensed table-hover">
+							    
+							    	<tr>
+							    		<th>Id</th>
+										<th>Nombre</th>
+										<th>Codigo</th>
+										<th>Categoria</th>
+										<th>Stock</th>
+										<th>Imagen</th>
+										<th>Estado</th>
+										@canatleast(['articulo.edit', 'articulo.delete'])
+										<th>Opciones</th>
+										@endcanatleast
+									</tr>
+							    
+							    {{ csrf_field() }}
 							    @foreach ($articulos as $art)
-							    <tr>
-							      <td>{{ $art->Arti_codi}}</td>
-							      <td>{{ $art->Arti_nomb}}</td>
-							      <td>{{ $art->Arti_seri}}</td>
-							      <td>{{ $art->Cate_nomb}}</td>
-							      <td>{{ $art->Arti_stoc}}</td>
-							      <td class="text-center">
-							      	<img src="{{ asset('img/articulos/'.$art->Arti_imag) }}"  height="100px" width="100px" class="img-thumbnail img-center">
-							      </td>
-							      <td>{{ $art->Arti_esta}}</td>
-							      @canatleast(['articulo.edit', 'articulo.delete'])
-							      <td>
-							      	@can('articulo.edit')
-							      	@if(($art->Arti_stoc)!= 0)
-							        <a href="{{URL::action('ArticuloController@edit', $art->Arti_codi)}}"><button class="btn btn-info">Editar</button></a>
-							        @else
-							        <a href="{{ url('compras/ingreso/create') }}"><button class="btn btn-info">Ingreso</button></a>
-							        @endif
-							        @endcan
-							        @can('articulo.delete')
-							        <a href="" data-target="#modal-delete-{{$art->Arti_codi}}" data-toggle="modal" ><button class="btn btn-danger">Eliminar</button></a>
-							        @endcan
-							      </td>
-							      @endcanatleast
-							    </tr>
-							    @include('almacen.articulo.delete')
+							    
+							    	<tr class="articulo{{$art->Arti_codi}}">
+							    	  <td>{{ $art->Arti_codi}}</td>
+							    	  <td>{{ $art->Arti_nomb}}</td>
+							    	  <td>{{ $art->Arti_seri}}</td>
+							    	  <td>{{ $art->Cate_nomb}}</td>
+							    	  <td>{{ $art->Arti_stoc}}</td>
+							    	  <td class="text-center">
+							    	  	<img src="{{asset('img/articulos/'.$art->Arti_imag)}}"  height="100px" width="100px" class="img-thumbnail img-center">
+							    	  </td>
+							    	  <td>{{ $art->Arti_esta}}</td>
+							    	  @canatleast(['articulo.edit', 'articulo.delete'])
+							    	  <td class="text-center">
+							    	  	<a href="#" class="show-modal btn btn-info btn-sm" data-codi="{{ $art->Arti_codi}}" data-nomb="{{ $art->Arti_nomb}}" data-seri="{{ $art->Arti_seri}}" data-nomc="{{ $art->Cate_nomb}}" data-stoc="N° {{ $art->Arti_stoc}}" data-esta="{{ $art->Arti_esta}}" data-desc="{{ $art->Arti_desc}}" data-imag="{{ $art->Arti_imag}}">Detalles</a>
+							    	  	@can('articulo.edit')
+							    	  	@if(($art->Arti_stoc)!= 0)
+							    	    <a href="#" class="edit-modal btn btn-warning btn-sm" data-codi="{{ $art->Arti_codi}}" data-nomb="{{ $art->Arti_nomb}}" data-seri="{{ $art->Arti_seri}}" data-nomc="{{ $art->Cate_codi}}" data-stoc="N° {{ $art->Arti_stoc}}" data-esta="{{ $art->Arti_esta}}" data-desc="{{ $art->Arti_desc}}" data-imag="{{ $art->Arti_imag}}" data-fech="{{  $art->Arti_fech }}">Editar</a>
+							    	    @else
+							    	    <a href="{{ url('compras/ingreso/create') }}"><button class="btn btn-sm bg-blue">Ingreso</button></a>
+							    	    @endif
+							    	    @endcan
+							    	    @can('articulo.delete')
+							    	    <a href="#" class="delete-modal btn btn-danger btn-sm" data-codi="{{$art->Arti_codi}}" data-nomb="{{$art->Arti_nomb}}">Eliminar</a>
+							    	    @endcan
+							    	  </td>
+							    	  @endcanatleast
+							    	</tr>
+							  
 							    @endforeach
+							    @include('almacen.articulo.create')
+							    @include('almacen.articulo.show')
+							    @include('almacen.articulo.delete')							    
 							</table>
 		                </div>
 		                {{ $articulos->render()}}
@@ -97,4 +105,9 @@
 	  </div><!-- /.box -->
 	</div><!-- /.col -->
 </div><!-- /.row -->
+@push('script')
+<script src="{{asset('js/ajax/articulo.js')}}"></script>
+<script src="{{asset('js/JsBarcode.all.min.js')}}"></script>
+<script src="{{asset('js/PrintArea.js')}}"></script>
+@endpush
 @stop
